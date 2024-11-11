@@ -57,7 +57,12 @@ units = {
     "concavity_mean": "Dimensionless",
     "concave points_mean": "Dimensionless",
     "symmetry_mean": "Dimensionless",
-    "fractal_dimension_mean": "Dimensionless"
+    "fractal_dimension_mean": "Dimensionless",
+    "perimeter_worst": "mm",
+    "concave points_worst": "Dimensionless",
+    "radius_worst": "mm",
+    "area_worst": "sq. mm",
+    "concavity_worst": "Dimensionless"
 }
 
 input_data = []
