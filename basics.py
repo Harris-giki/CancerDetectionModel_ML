@@ -5,16 +5,20 @@ from sklearn.preprocessing import StandardScaler  # For scaling the features
 from sklearn.linear_model import LogisticRegression  # Logistic Regression model
 from sklearn.metrics import accuracy_score  # For evaluating model accuracy
 
-# Step 1: Load the dataset and perform initial data analysis
+# Step 1: Create the Streamlit interface
+st.title("Breast Cancer Diagnosis Prediction")
+st.write("### This model predicts whether a tumor is malignant or benign based on selected features.")
+
+# Step 2: Load the dataset and perform initial data analysis
 data = pd.read_csv("data.csv")  # Loading the dataset
 
 # Dropping unnecessary columns and cleaning the data
 data.drop(["Unnamed: 32", "id"], axis=1, inplace=True)  # Dropping columns with no data
 
-# Step 2: Convert the target 'diagnosis' to numerical (1 = Malignant, 0 = Benign)
+# Step 3: Convert the target 'diagnosis' to numerical (1 = Malignant, 0 = Benign)
 data["diagnosis"] = data["diagnosis"].apply(lambda x: 1 if x == "M" else 0)
 
-# Step 3: Perform correlation analysis to find the most important features
+# Step 4: Perform correlation analysis to find the most important features
 corr_matrix = data.corr()  # Calculate the correlation matrix
 correlation_with_diagnosis = corr_matrix["diagnosis"].abs().sort_values(ascending=False)  # Get absolute correlation values
 
@@ -24,9 +28,9 @@ st.write("### Top 10 Features Correlated with Diagnosis", align="center")
 st.write(top_features)
 
 # Add a one-liner below the table
-st.write("These features are considered most important in making accurate predictions about the detection of cancer through correlation statistical techniques.")
+st.write("These features are considered most important in making accurate predictions through correlation statistical technique.")
 
-# Step 4: Prepare the selected features
+# Step 5: Prepare the selected features
 selected_features = top_features.index.tolist()  # Get the names of the top features
 X = data[selected_features]  # Predictor variables
 y = data["diagnosis"]  # Target variable
@@ -35,13 +39,11 @@ y = data["diagnosis"]  # Target variable
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
 
-# Step 5: Train the Logistic Regression model
+# Step 6: Train the Logistic Regression model
 lr = LogisticRegression()  # Instantiate the logistic regression model
 lr.fit(X_scaled, y)  # Train the model on the data
 
-# Step 6: Create the Streamlit interface
-st.title("Breast Cancer Diagnosis Prediction")
-st.write("### This model predicts whether a tumor is malignant or benign based on selected features.")
+
 
 # Input fields for the selected features
 st.write("### Enter the feature values:")
@@ -52,7 +54,7 @@ for feature in selected_features:
     value = st.number_input(f"{feature}:", min_value=0.0, format="%.5f")
     input_data.append(value)
 
-# Step 7: Predict and display results when the user clicks the 'Predict' button
+# Step 8: Predict and display results when the user clicks the 'Predict' button
 if st.button("Predict Diagnosis"):
     # Convert input data into a DataFrame for prediction
     input_df = pd.DataFrame([input_data], columns=selected_features)
