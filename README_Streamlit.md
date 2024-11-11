@@ -91,6 +91,4 @@ lr.fit(X_scaled, y)</code></pre>
         <li><strong>Web Deployment</strong>: Deploy the Streamlit app on a cloud platform like Heroku or AWS for easier access.</li>
         <li><strong>Real-time Prediction</strong>: Integrate the model with real-time data sources for predictions based on incoming patient data.</li>
     </ul>
-    <h2 id="license">License</h2>
-    <p>This project is licensed under the MIT License - see the <a href="LICENSE">LICENSE</a> file for details.</p>
 
