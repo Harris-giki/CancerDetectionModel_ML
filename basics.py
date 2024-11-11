@@ -74,8 +74,3 @@ if st.button("Predict Diagnosis"):
         st.write("### The tumor is predicted to be **Benign**.")
         st.write(f"Probability of being malignant: {prediction_prob:.2f}")
 
-# Optional: Visualizing the distribution of the data
-st.write("### Data Visualization")
-sns.heatmap(data.isnull(), cbar=False, cmap='viridis')  # Check for missing values visually
-st.pyplot()
-
