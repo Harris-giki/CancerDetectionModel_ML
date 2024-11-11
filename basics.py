@@ -43,15 +43,36 @@ X_scaled = scaler.fit_transform(X)
 lr = LogisticRegression()  # Instantiate the logistic regression model
 lr.fit(X_scaled, y)  # Train the model on the data
 
-
-
-# Input fields for the selected features
+# Input fields for the selected features with units
 st.write("### Enter the feature values:")
+
+# Updated dictionary with dimensionless features explained
+units = {
+    "radius_mean": "mm",
+    "texture_mean": "Dimensionless",
+    "perimeter_mean": "mm",
+    "area_mean": "sq. mm",
+    "smoothness_mean": "Dimensionless",
+    "compactness_mean": "Dimensionless",
+    "concavity_mean": "Dimensionless",
+    "concave points_mean": "Dimensionless",
+    "symmetry_mean": "Dimensionless",
+    "fractal_dimension_mean": "Dimensionless"
+}
 
 input_data = []
 for feature in selected_features:
-    # Allow the user to input values for the selected features
-    value = st.number_input(f"{feature}:", min_value=0.0, format="%.5f")
+    # Get the unit or note for the current feature
+    unit = units.get(feature, "")  # Default to empty string if no unit is defined
+    if unit == "Dimensionless":
+        # For dimensionless features, display a note about being dimensionless
+        value = st.number_input(f"{feature} (Dimensionless):", min_value=0.0, format="%.5f")
+    elif unit:
+        # For features with a unit, include the unit in the prompt
+        value = st.number_input(f"{feature} ({unit}):", min_value=0.0, format="%.5f")
+    else:
+        # If no unit or note, just display the feature name
+        value = st.number_input(f"{feature}:", min_value=0.0, format="%.5f")
     input_data.append(value)
 
 # Step 8: Predict and display results when the user clicks the 'Predict' button
@@ -73,4 +94,3 @@ if st.button("Predict Diagnosis"):
     else:
         st.write("### The tumor is predicted to be **Benign**.")
         st.write(f"Probability of being malignant: {prediction_prob:.2f}")
-#End
