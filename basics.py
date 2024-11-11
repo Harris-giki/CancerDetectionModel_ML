@@ -20,8 +20,11 @@ correlation_with_diagnosis = corr_matrix["diagnosis"].abs().sort_values(ascendin
 
 # Selecting top 10 features based on correlation with 'diagnosis'
 top_features = correlation_with_diagnosis[1:11]  # Excluding the target 'diagnosis'
-st.write("### Top 10 Features Correlated with Diagnosis")
+st.write("### Top 10 Features Correlated with Diagnosis", align="center")
 st.write(top_features)
+
+# Add a one-liner below the table
+st.write("These features are considered most important in making accurate predictions about the detection of cancer through correlation statistical techniques.")
 
 # Step 4: Prepare the selected features
 selected_features = top_features.index.tolist()  # Get the names of the top features
@@ -73,3 +76,4 @@ if st.button("Predict Diagnosis"):
 st.write("### Data Visualization")
 sns.heatmap(data.isnull(), cbar=False, cmap='viridis')  # Check for missing values visually
 st.pyplot()
+
