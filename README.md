@@ -1,10 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cancer Detection Model</title>
-</head>
 <body>
 
 <h1>Cancer Detection Model</h1>
@@ -154,4 +147,4 @@ model.evaluate_model()</code></pre>
 </ul>
 
 </body>
-</html>
+
