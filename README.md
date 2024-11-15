@@ -81,14 +81,7 @@
 </ul>
 
 <h3 id="modeling">Modeling</h3>
-<p>Several machine learning models were tested, with hyperparameter tuning applied to optimize each:</p>
-<ul>
-  <li><strong>Logistic Regression:</strong> Employed as a baseline due to its interpretability and efficiency.</li>
-  <li><strong>Random Forest:</strong> Used to leverage feature importance and robust classification.</li>
-  <li><strong>Support Vector Machine (SVM):</strong> Applied for its ability to handle high-dimensional spaces effectively.</li>
-  <li><strong>Neural Networks:</strong> Leveraged to capture complex patterns and enhance prediction accuracy.</li>
-</ul>
-
+<p>Logistic Regression:</strong> Employed as a baseline due to its interpretability and efficiency.</p>
 <h3 id="evaluation-metrics">Evaluation Metrics</h3>
 <p>We used the following metrics to evaluate model performance:</p>
 <ul>
