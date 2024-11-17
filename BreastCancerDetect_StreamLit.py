@@ -1,101 +1,69 @@
-import pandas as pd  # For data manipulation
-import seaborn as sns  # For visualization
-import streamlit as st  # For creating the Streamlit app
-from sklearn.preprocessing import StandardScaler  # For scaling the features
-from sklearn.linear_model import LogisticRegression  # Logistic Regression model
-from sklearn.metrics import accuracy_score  # For evaluating model accuracy
+import streamlit as st
+import numpy as np
+import pandas as pd
+import sklearn.datasets
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+import tensorflow as tf
+from tensorflow import keras
 
-# Step 1: Create the Streamlit interface
-st.title("Breast Cancer Diagnosis Prediction")
-st.write("### This model predicts whether a tumor is malignant or benign based on selected features.")
+# Set up the Streamlit app
+st.title("Breast Cancer Prediction App")
+st.write("This application uses a Neural Network to predict if breast cancer is malignant or benign based on user inputs.")
 
-# Step 2: Load the dataset and perform initial data analysis
-data = pd.read_csv("data.csv")  # Loading the dataset
+# Load and process the dataset
+breast_cancer_dataset = sklearn.datasets.load_breast_cancer()
+data_frame = pd.DataFrame(breast_cancer_dataset.data, columns=breast_cancer_dataset.feature_names)
+data_frame['label'] = breast_cancer_dataset.target
 
-# Dropping unnecessary columns and cleaning the data
-data.drop(["Unnamed: 32", "id"], axis=1, inplace=True)  # Dropping columns with no data
+X = data_frame.drop(columns=['label'], axis=1)
+Y = data_frame['label']
 
-# Step 3: Convert the target 'diagnosis' to numerical (1 = Malignant, 0 = Benign)
-data["diagnosis"] = data["diagnosis"].apply(lambda x: 1 if x == "M" else 0)
+X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=2)
 
-# Step 4: Perform correlation analysis to find the most important features
-corr_matrix = data.corr()  # Calculate the correlation matrix
-correlation_with_diagnosis = corr_matrix["diagnosis"].abs().sort_values(ascending=False)  # Get absolute correlation values
-
-# Selecting top 10 features based on correlation with 'diagnosis'
-top_features = correlation_with_diagnosis[1:11]  # Excluding the target 'diagnosis'
-st.write("### Top 10 Features Correlated with Diagnosis", align="center")
-st.write(top_features)
-
-# Add a one-liner below the table
-st.write("These features are considered most important in making accurate predictions through correlation statistical technique.")
-
-# Step 5: Prepare the selected features
-selected_features = top_features.index.tolist()  # Get the names of the top features
-X = data[selected_features]  # Predictor variables
-y = data["diagnosis"]  # Target variable
-
-# Scaling the features to bring them to a similar scale
+# Standardizing the dataset
 scaler = StandardScaler()
-X_scaled = scaler.fit_transform(X)
+X_train_std = scaler.fit_transform(X_train)
+X_test_std = scaler.transform(X_test)
 
-# Step 6: Train the Logistic Regression model
-lr = LogisticRegression()  # Instantiate the logistic regression model
-lr.fit(X_scaled, y)  # Train the model on the data
+# Define and train the neural network
+tf.random.set_seed(3)
+model = keras.Sequential([
+    keras.layers.Flatten(input_shape=(30,)),
+    keras.layers.Dense(20, activation='relu'),
+    keras.layers.Dense(2, activation='sigmoid')
+])
 
-# Input fields for the selected features with units
-st.write("### Enter the feature values:")
+model.compile(optimizer='adam',
+              loss='sparse_categorical_crossentropy',
+              metrics=['accuracy'])
 
-# Updated dictionary with dimensionless features explained
-units = {
-    "radius_mean": "mm",
-    "texture_mean": "Dimensionless",
-    "perimeter_mean": "mm",
-    "area_mean": "sq. mm",
-    "smoothness_mean": "Dimensionless",
-    "compactness_mean": "Dimensionless",
-    "concavity_mean": "Dimensionless",
-    "concave points_mean": "Dimensionless",
-    "symmetry_mean": "Dimensionless",
-    "fractal_dimension_mean": "Dimensionless",
-    "perimeter_worst": "mm",
-    "concave points_worst": "Dimensionless",
-    "radius_worst": "mm",
-    "area_worst": "sq. mm",
-    "concavity_worst": "Dimensionless"
-}
+model.fit(X_train_std, Y_train, validation_split=0.1, epochs=15)
 
-input_data = []
-for feature in selected_features:
-    # Get the unit or note for the current feature
-    unit = units.get(feature, "")  # Default to empty string if no unit is defined
-    if unit == "Dimensionless":
-        # For dimensionless features, display a note about being dimensionless
-        value = st.number_input(f"{feature} (Dimensionless):", min_value=0.0, format="%.5f")
-    elif unit:
-        # For features with a unit, include the unit in the prompt
-        value = st.number_input(f"{feature} ({unit}):", min_value=0.0, format="%.5f")
+# User input for prediction
+st.header("Input Features")
+input_features = []
+for feature in breast_cancer_dataset.feature_names:
+    value = st.number_input(f"Enter value for {feature}:", format="%.4f", value=0.0)
+    input_features.append(value)
+
+# Predict button
+if st.button("Predict"):
+    # Convert input to numpy array and preprocess
+    input_data_as_numpy_array = np.asarray(input_features)
+    input_data_reshaped = input_data_as_numpy_array.reshape(1, -1)
+    input_std_data = scaler.transform(input_data_reshaped)
+
+    # Make a prediction
+    prediction = model.predict(input_std_data)
+    prediction_label = np.argmax(prediction)
+
+    # Display the result
+    if prediction_label == 0:
+        st.write("### The Breast Cancer is Malignant")
     else:
-        # If no unit or note, just display the feature name
-        value = st.number_input(f"{feature}:", min_value=0.0, format="%.5f")
-    input_data.append(value)
+        st.write("### The Breast Cancer is Benign")
 
-# Step 8: Predict and display results when the user clicks the 'Predict' button
-if st.button("Predict Diagnosis"):
-    # Convert input data into a DataFrame for prediction
-    input_df = pd.DataFrame([input_data], columns=selected_features)
-    
-    # Scale the input data before making predictions
-    input_scaled = scaler.transform(input_df)
-    
-    # Make the prediction
-    prediction = lr.predict(input_scaled)
-    prediction_prob = lr.predict_proba(input_scaled)[0][1]  # Probability of being malignant
-    
-    # Display the prediction result
-    if prediction == 1:
-        st.write("### The tumor is predicted to be **Malignant**.")
-        st.write(f"Probability of being malignant: {prediction_prob:.2f}")
-    else:
-        st.write("### The tumor is predicted to be **Benign**.")
-        st.write(f"Probability of being malignant: {prediction_prob:.2f}")
+# Display training accuracy for reference
+loss, accuracy = model.evaluate(X_test_std, Y_test)
+st.write(f"Model Test Accuracy: {accuracy * 100:.2f}%")
