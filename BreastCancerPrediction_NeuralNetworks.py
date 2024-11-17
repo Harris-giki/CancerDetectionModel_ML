@@ -1,55 +1,69 @@
 import streamlit as st
 import numpy as np
-import tensorflow as tf
+import pandas as pd
+import sklearn.datasets
+from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
+import tensorflow as tf
+from tensorflow import keras
 
-# Load the trained model
-model = tf.keras.models.load_model('breast_cancer_model.h5')  # Replace with your model file path
+# Set up the Streamlit app
+st.title("Breast Cancer Prediction App")
+st.write("This application uses a Neural Network to predict if breast cancer is malignant or benign based on user inputs.")
 
-# Initialize the scaler (use the same scaling method as used during training)
+# Load and process the dataset
+breast_cancer_dataset = sklearn.datasets.load_breast_cancer()
+data_frame = pd.DataFrame(breast_cancer_dataset.data, columns=breast_cancer_dataset.feature_names)
+data_frame['label'] = breast_cancer_dataset.target
+
+X = data_frame.drop(columns=['label'], axis=1)
+Y = data_frame['label']
+
+X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=2)
+
+# Standardizing the dataset
 scaler = StandardScaler()
+X_train_std = scaler.fit_transform(X_train)
+X_test_std = scaler.transform(X_test)
 
-# Input feature names
-feature_names = [
-    'Mean Radius', 'Mean Texture', 'Mean Perimeter', 'Mean Area', 'Mean Smoothness',
-    'Mean Compactness', 'Mean Concavity', 'Mean Concave Points', 'Mean Symmetry',
-    'Mean Fractal Dimension', 'Radius Error', 'Texture Error', 'Perimeter Error',
-    'Area Error', 'Smoothness Error', 'Compactness Error', 'Concavity Error',
-    'Concave Points Error', 'Symmetry Error', 'Fractal Dimension Error',
-    'Worst Radius', 'Worst Texture', 'Worst Perimeter', 'Worst Area', 'Worst Smoothness',
-    'Worst Compactness', 'Worst Concavity', 'Worst Concave Points', 'Worst Symmetry',
-    'Worst Fractal Dimension'
-]
+# Define and train the neural network
+tf.random.set_seed(3)
+model = keras.Sequential([
+    keras.layers.Flatten(input_shape=(30,)),
+    keras.layers.Dense(20, activation='relu'),
+    keras.layers.Dense(2, activation='sigmoid')
+])
 
-# Streamlit App
-st.title("Breast Cancer Prediction Application")
-st.write("""
-This app predicts whether a breast tumor is **Malignant** (cancerous) or **Benign** (non-cancerous) 
-based on clinical features. Please input the required values below.
-""")
+model.compile(optimizer='adam',
+              loss='sparse_categorical_crossentropy',
+              metrics=['accuracy'])
 
-# Create input fields for user to enter data
-user_input = []
-for feature in feature_names:
-    value = st.number_input(f"Enter {feature}:", min_value=0.0, max_value=1000.0, step=0.01)
-    user_input.append(value)
+model.fit(X_train_std, Y_train, validation_split=0.1, epochs=15)
+
+# User input for prediction
+st.header("Input Features")
+input_features = []
+for feature in breast_cancer_dataset.feature_names:
+    value = st.number_input(f"Enter value for {feature}:", format="%.4f", value=0.0)
+    input_features.append(value)
 
 # Predict button
 if st.button("Predict"):
-    # Convert user input into a NumPy array and reshape it
-    input_data = np.array(user_input).reshape(1, -1)
+    # Convert input to numpy array and preprocess
+    input_data_as_numpy_array = np.asarray(input_features)
+    input_data_reshaped = input_data_as_numpy_array.reshape(1, -1)
+    input_std_data = scaler.transform(input_data_reshaped)
 
-    # Standardize the input data (use the same scaler as in training)
-    scaled_data = scaler.fit_transform(input_data)  # Ensure `scaler` matches the training scaler
+    # Make a prediction
+    prediction = model.predict(input_std_data)
+    prediction_label = np.argmax(prediction)
 
-    # Make prediction
-    prediction = model.predict(scaled_data)
-    predicted_class = np.argmax(prediction)
-
-    # Display result
-    if predicted_class == 0:
-        st.error("The tumor is predicted to be Malignant (Cancerous).")
+    # Display the result
+    if prediction_label == 0:
+        st.write("### The Breast Cancer is Malignant")
     else:
-        st.success("The tumor is predicted to be Benign (Non-Cancerous).")
+        st.write("### The Breast Cancer is Benign")
 
-    st.write(f"Prediction Confidence: Malignant: {prediction[0][0]:.2f}, Benign: {prediction[0][1]:.2f}")
+# Display training accuracy for reference
+loss, accuracy = model.evaluate(X_test_std, Y_test)
+st.write(f"Model Test Accuracy: {accuracy * 100:.2f}%")
