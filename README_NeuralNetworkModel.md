@@ -102,7 +102,6 @@
     <p><strong>Muhammad Haris</strong></p>
     <p>
         <strong>Email:</strong> <a href="mailto:harris.giki@gmail.com">harris.giki@gmail.com</a><br>
-        <strong>GitHub:</strong> <a href="https://github.com">Profile</a> (add your GitHub link)
     </p>
 </body>
 </html>
