@@ -15,7 +15,6 @@ st.write("This application uses a Neural Network to predict if breast cancer is 
 breast_cancer_dataset = sklearn.datasets.load_breast_cancer()
 data_frame = pd.DataFrame(breast_cancer_dataset.data, columns=breast_cancer_dataset.feature_names)
 data_frame['label'] = breast_cancer_dataset.target
-
 X = data_frame.drop(columns=['label'], axis=1)
 Y = data_frame['label']
 
@@ -26,6 +25,16 @@ correlated_features = correlation_matrix[correlation_matrix > 0.1].index  # Sele
 # Filter the dataset to use only the selected correlated features
 X = X[correlated_features]
 
+# Display features and their correlations in a table
+correlated_features_df = pd.DataFrame({
+    'Feature': correlated_features,
+    'Correlation with Target Variable': correlation_matrix[correlated_features].values
+})
+
+st.header("Input Features")
+st.write(correlated_features_df)  # Display the table with feature names and correlations
+
+# Prepare data for training
 X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=2)
 
 # Standardizing the dataset
@@ -48,16 +57,10 @@ model.compile(optimizer='adam',
 model.fit(X_train_std, Y_train, validation_split=0.1, epochs=15)
 
 # User input for prediction
-st.header("Input Features")
-# Display selected features
-
-st.write(correlated_features)
-
 input_features = []
 for feature in correlated_features:
     value = st.number_input(f"Enter value for {feature}:", format="%.4f", value=0.0)
     input_features.append(value)
-
 
 # Predict button
 if st.button("Predict"):
