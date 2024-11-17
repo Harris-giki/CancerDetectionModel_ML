@@ -27,7 +27,7 @@ X = X[correlated_features]
 
 # Display features and their correlations in a table
 correlated_features_df = pd.DataFrame({
-    'Feature': correlated_features,
+    'Required Features': correlated_features,
     'Correlation with Target Variable': correlation_matrix[correlated_features].values
 })
 
