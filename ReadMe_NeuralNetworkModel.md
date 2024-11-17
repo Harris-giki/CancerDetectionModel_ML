@@ -1,4 +1,4 @@
-<title>Breast Cancer Prediction Using Neural Networks</title>
+
 <body>
     <h1>Breast Cancer Prediction Using Neural Networks</h1>
     <p>
