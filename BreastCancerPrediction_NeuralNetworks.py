@@ -19,6 +19,13 @@ data_frame['label'] = breast_cancer_dataset.target
 X = data_frame.drop(columns=['label'], axis=1)
 Y = data_frame['label']
 
+# Calculate correlation with target label
+correlation_matrix = X.corrwith(Y).abs()  # Absolute correlation to focus on magnitude
+correlated_features = correlation_matrix[correlation_matrix > 0.1].index  # Select features with correlation > 0.1 (you can adjust this threshold)
+
+# Filter the dataset to use only the selected correlated features
+X = X[correlated_features]
+
 X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=2)
 
 # Standardizing the dataset
@@ -29,7 +36,7 @@ X_test_std = scaler.transform(X_test)
 # Define and train the neural network
 tf.random.set_seed(3)
 model = keras.Sequential([
-    keras.layers.Flatten(input_shape=(30,)),
+    keras.layers.Flatten(input_shape=(X_train_std.shape[1],)),  # Dynamically use the number of selected features
     keras.layers.Dense(20, activation='relu'),
     keras.layers.Dense(2, activation='sigmoid')
 ])
@@ -41,11 +48,15 @@ model.compile(optimizer='adam',
 model.fit(X_train_std, Y_train, validation_split=0.1, epochs=15)
 
 # User input for prediction
-st.header("Input Features")
+st.header("Input Features (Only selected important features)")
 input_features = []
-for feature in breast_cancer_dataset.feature_names:
+for feature in correlated_features:
     value = st.number_input(f"Enter value for {feature}:", format="%.4f", value=0.0)
     input_features.append(value)
+
+# Display selected features
+st.write("### The following features have been selected for prediction due to their high correlation with the target label:")
+st.write(correlated_features)
 
 # Predict button
 if st.button("Predict"):
