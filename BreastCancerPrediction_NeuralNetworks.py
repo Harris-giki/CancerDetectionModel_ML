@@ -20,14 +20,14 @@ Y = data_frame['label']
 
 # Calculate correlation with target label
 correlation_matrix = X.corrwith(Y).abs()  # Absolute correlation to focus on magnitude
-correlated_features = correlation_matrix[correlation_matrix > 0.1].index  # Select features with correlation > 0.1 (you can adjust this threshold)
+correlated_features = correlation_matrix[correlation_matrix > 0.5].index  # Only keep features with correlation > 0.5
 
 # Filter the dataset to use only the selected correlated features
 X = X[correlated_features]
 
 # Display features and their correlations in a table
 correlated_features_df = pd.DataFrame({
-    'Feature': correlated_features,
+    'Required Features': correlated_features,
     'Correlation with Target Variable': correlation_matrix[correlated_features].values
 })
 
