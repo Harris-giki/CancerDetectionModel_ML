@@ -2,7 +2,7 @@
 
 <h1>Cancer Detection Model</h1>
 
-<p>A machine learning model designed to assist in the early detection of cancer, using advanced data processing and model training techniques. This project covers the end-to-end pipeline, from data preprocessing to model evaluation, with flexibility to run on Google Colab or a local environment.</p>
+<p>A machine learning model designed to assist in the early detection of cancer, using both a traditional logistic regression model and a more advanced neural network. This project covers the end-to-end pipeline, from data preprocessing to model evaluation, with flexibility to run on Google Colab or a local environment.</p>
 
 <h2>Table of Contents</h2>
 <ol>
@@ -13,7 +13,8 @@
   <ul>
     <li><a href="#data-preprocessing">Data Preprocessing</a></li>
     <li><a href="#feature-selection">Feature Selection</a></li>
-    <li><a href="#modeling">Modeling</a></li>
+    <li><a href="#logistic-regression">Logistic Regression</a></li>
+    <li><a href="#neural-network">Neural Network</a></li>
     <li><a href="#evaluation-metrics">Evaluation Metrics</a></li>
   </ul>
   <li><a href="#running-the-project">Running the Project</a></li>
@@ -23,7 +24,12 @@
 </ol>
 
 <h2 id="project-overview">Project Overview</h2>
-<p>This project aims to build an efficient and accurate model for cancer detection based on a structured dataset. By applying various machine learning algorithms and techniques, this model helps in identifying patterns associated with cancer diagnoses. It can serve as a foundation for future work on similar medical diagnostic applications.</p>
+<p>This project aims to build efficient and accurate models for cancer detection based on a structured dataset. It includes two approaches:
+  <ul>
+    <li><strong>Logistic Regression:</strong> A traditional machine learning model used as a baseline for the task.</li>
+    <li><strong>Neural Network:</strong> A more advanced deep learning approach using a neural network to predict cancer malignancy.</li>
+  </ul>
+Both approaches are designed to identify patterns associated with cancer diagnoses and can serve as a foundation for future work on similar medical diagnostic applications.</p>
 
 <h2 id="dataset">Dataset</h2>
 <p>The dataset for this project is available as <code>data.csv</code>. It includes a range of features commonly associated with cancer diagnoses. Make sure to download this file from the repository or use the link provided below to get a copy if you're running the project locally.</p>
@@ -42,7 +48,7 @@
 <ol>
   <li>Open the <a href="link-to-colab-notebook">Google Colab Notebook</a> provided in the repository.</li>
   <li>Mount Google Drive if needed and upload <code>data.csv</code>.</li>
-  <li>Run the cells sequentially to execute the full pipeline.</li>
+  <li>Run the cells sequentially to execute the full pipeline for both models.</li>
 </ol>
 
 <h3>Running Locally</h3>
@@ -80,8 +86,21 @@
   <li><strong>Dimensionality Reduction:</strong> Reduced the dataset’s dimensionality to improve computational efficiency.</li>
 </ul>
 
-<h3 id="modeling">Modeling</h3>
-<p>Logistic Regression:</strong> Employed as a baseline due to its interpretability and efficiency.</p>
+<h3 id="logistic-regression">Logistic Regression</h3>
+<p>The logistic regression model is implemented as a baseline model for cancer detection. It is a traditional machine learning method that works well for binary classification tasks, where the outcome is either malignant or benign.</p>
+<ul>
+  <li><strong>Model:</strong> Logistic Regression is used to identify patterns and predict the likelihood of cancer malignancy.</li>
+  <li><strong>Training:</strong> The model is trained on the preprocessed data using standard optimization techniques.</li>
+</ul>
+
+<h3 id="neural-network">Neural Network</h3>
+<p>The neural network implementation is a more advanced approach using TensorFlow/Keras. It offers the flexibility to handle complex relationships in the data and can outperform traditional models in certain scenarios.</p>
+<ul>
+  <li><strong>Model:</strong> A simple neural network with one hidden layer is implemented using Keras.</li>
+  <li><strong>Activation Function:</strong> ReLU is used in the hidden layer, and a sigmoid activation is used for the output layer.</li>
+  <li><strong>Training:</strong> The model is trained on standardized data, using an optimizer like Adam and loss function as binary cross-entropy.</li>
+</ul>
+
 <h3 id="evaluation-metrics">Evaluation Metrics</h3>
 <p>We used the following metrics to evaluate model performance:</p>
 <ul>
@@ -100,11 +119,12 @@
 <h3>Example Usage</h3>
 <pre><code>from cancer_detection import CancerDetection
 
-# Initialize and run model training
-model = CancerDetection()
-model.preprocess_data()
-model.train_model()
-model.evaluate_model()</code></pre>
+# Initialize and run model training for both Logistic Regression and Neural Network
+logistic_model = CancerDetection(model_type='logistic_regression')
+logistic_model.train_and_evaluate()
+
+neural_network_model = CancerDetection(model_type='neural_network')
+neural_network_model.train_and_evaluate()</code></pre>
 
 <h2 id="project-structure">Project Structure</h2>
 
@@ -117,6 +137,8 @@ model.evaluate_model()</code></pre>
 ├── scripts/                     # Python scripts for modularity
 │   ├── preprocess.py            # Preprocessing functions
 │   ├── model_training.py        # Model training functions
+│   ├── logistic_regression.py   # Logistic regression model code
+│   ├── neural_network.py        # Neural network model code
 │
 ├── README.md                    # Project README
 ├── requirements.txt             # Python dependencies
@@ -126,7 +148,7 @@ model.evaluate_model()</code></pre>
 <h2 id="future-directions">Future Directions</h2>
 <p>This project provides a foundational model for cancer detection, but several potential enhancements are possible:</p>
 <ul>
-  <li><strong>Integrate Deep Learning Models:</strong> Experiment with deep learning models such as Convolutional Neural Networks (CNNs) for image-based cancer datasets.</li>
+  <li><strong>Integrate Deep Learning Models:</strong> Experiment with more complex deep learning models such as Convolutional Neural Networks (CNNs) for image-based cancer datasets.</li>
   <li><strong>Add Cross-Validation:</strong> Further ensure model robustness by adding cross-validation techniques.</li>
   <li><strong>Explore Transfer Learning:</strong> Use pre-trained models for cancer detection with more advanced techniques.</li>
   <li><strong>Incorporate Real-World Testing:</strong> Test with a larger, more diverse dataset to improve generalizability.</li>
@@ -134,10 +156,8 @@ model.evaluate_model()</code></pre>
 
 <h2 id="references">References</h2>
 <ul>
-  <li><a href="https://scikit-learn.org/stable/documentation.html">Sklearn Documentation</a></li>
-  <li><a href="https://pandas.pydata.org/pandas-docs/stable/">Pandas Library</a></li>
-  <li><a href="https://keras.io/">Keras Documentation</a></li>
+  <li>[1] Example of a relevant research paper or dataset source.</li>
+  <li>[2] Another research paper or tutorial related to cancer detection models.</li>
 </ul>
 
 </body>
-
