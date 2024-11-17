@@ -48,15 +48,16 @@ model.compile(optimizer='adam',
 model.fit(X_train_std, Y_train, validation_split=0.1, epochs=15)
 
 # User input for prediction
-st.header("Input Features (Only selected important features)")
+st.header("Input Features")
+# Display selected features
+
+st.write(correlated_features)
+
 input_features = []
 for feature in correlated_features:
     value = st.number_input(f"Enter value for {feature}:", format="%.4f", value=0.0)
     input_features.append(value)
 
-# Display selected features
-st.write("### The following features have been selected for prediction due to their high correlation with the target label:")
-st.write(correlated_features)
 
 # Predict button
 if st.button("Predict"):
