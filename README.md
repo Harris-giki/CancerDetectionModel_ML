@@ -30,7 +30,7 @@
     <li><strong>Neural Network:</strong> A more advanced deep learning approach using a neural network to predict cancer malignancy.</li>
   </ul>
 Both approaches are designed to identify patterns associated with cancer diagnoses and can serve as a foundation for future work on similar medical diagnostic applications.</p>
-## Neural Network Architecture
+##Neural Network Architecture
 The deep learning approach leverages a neural network for cancer detection. Below is the architecture of the neural network used for training the model.
 
 ![Neural Network Architecture](NeuralNetworkArchitecture.png)
