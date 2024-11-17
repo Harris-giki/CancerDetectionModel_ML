@@ -30,7 +30,15 @@
     <li><strong>Neural Network:</strong> A more advanced deep learning approach using a neural network to predict cancer malignancy.</li>
   </ul>
 Both approaches are designed to identify patterns associated with cancer diagnoses and can serve as a foundation for future work on similar medical diagnostic applications.</p>
+## Neural Network Architecture
+The deep learning approach leverages a neural network for cancer detection. Below is the architecture of the neural network used for training the model.
 
+![Neural Network Architecture](NeuralNetworkArchitecture.png)
+
+The neural network consists of several layers:
+- **Input Layer**: Accepts features from the dataset.
+- **Hidden Layer**: Dense layer for feature extraction and learning complex patterns.
+- **Output Layer**: Produces the final prediction (Cancerous Tumour or Non-Cancerous Tumour).
 <h2 id="dataset">Dataset</h2>
 <p>The dataset for this project is available as <code>data.csv</code>. It includes a range of features commonly associated with cancer diagnoses. Make sure to download this file from the repository or use the link provided below to get a copy if you're running the project locally.</p>
 
@@ -154,10 +162,5 @@ neural_network_model.train_and_evaluate()</code></pre>
   <li><strong>Incorporate Real-World Testing:</strong> Test with a larger, more diverse dataset to improve generalizability.</li>
 </ul>
 
-<h2 id="references">References</h2>
-<ul>
-  <li>[1] Example of a relevant research paper or dataset source.</li>
-  <li>[2] Another research paper or tutorial related to cancer detection models.</li>
-</ul>
 
 </body>
