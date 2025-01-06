@@ -149,8 +149,7 @@ neural_network_model.train_and_evaluate()</code></pre>
 │   ├── neural_network.py        # Neural network model code
 │
 ├── README.md                    # Project README
-├── requirements.txt             # Python dependencies
-└── LICENSE                      # License for the project
+└──requirements.txt             # Python dependencies
 </code></pre>
 
 <h2 id="future-directions">Future Directions</h2>
